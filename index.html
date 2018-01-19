@@ -16,43 +16,71 @@
 <body>
     <h1>Chat</h1>
     <form action="/" method="post" id="formulaire_chat">
-        <img src="img/degout.png" />&nbsp;
-        <img src="img/joie.png" />&nbsp;
-        <img src="img/radieu.png" />&nbsp;
-        <img src="img/surprise.png" /><br />
         <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
-        <input type="submit" id="envoi_message" value="Envoyer" />
+        <input type="submit" id="envoi_message" value="Envoyer" /><br /><br />
+        <img src="img/s_degout.png" onclick="onClickMe(':(')" />&nbsp;
+        <img src="img/s_joie.png" onclick="insert(this,':)')" />&nbsp;
+        <img src="img/s_radieu.png" onclick="insert(this,':))')" />&nbsp;
+        <img src="img/s_surprise.png" onclick="insert(this,':|')" />
     </form>
+    
+
     <section id="zone_chat"></section>
 
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        
-            var socket = io.connect('http://localhost:8080');
-            var pseudo = prompt('Quel est votre pseudo ?');
-            socket.emit('nouveau_client', pseudo);
-            document.title = pseudo + ' - ' + document.title;
 
-            socket.on('message', function(data) {
-                insereMessage(data.pseudo, data.message)
-            })
+        var socket = io.connect('http://localhost:8080');
+        var pseudo = prompt('Quel est votre pseudo ?');
+        socket.emit('nouveau_client', pseudo);
+        document.title = pseudo + ' - ' + document.title;
 
-            socket.on('nouveau_client', function(pseudo) {
-                $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
-            })
+        socket.on('message', function (data) {
+            insereMessage(data.pseudo, data.message)
+        })
 
-            $('#formulaire_chat').submit(function () {
-                var message = $('#message').val();
-                socket.emit('message', message);
-                insereMessage(pseudo, message); 
-                $('#message').val('').focus(); 
-                return false; 
-            });
-        
-            function insereMessage(pseudo, message) {
-                $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> ' + message + '</p>');
-            }
+        socket.on('nouveau_client', function (pseudo) {
+            $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+        })
+
+        $('#formulaire_chat').submit(function () {
+            var message = $('#message').val();
+            message = ShowIcon(message);
+            socket.emit('message', message);
+            insereMessage(pseudo, message);
+            $('#message').val('').focus();
+            return false;
+        });
+
+        function insereMessage(pseudo, message) {
+            $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> ' + message + '</p>');
+        }
+
+        function ShowIcon(message) {
+            message = ReplaceRacourciParEmoticon(message, ":))", "s_radieu");
+            message = ReplaceRacourciParEmoticon(message, ":)", "s_joie");
+            message = ReplaceRacourciParEmoticon(message, ":|", "s_surprise");
+            message = ReplaceRacourciParEmoticon(message, ":(", "s_degout");
+            console.log(message);
+            return message;
+        }
+
+        function ReplaceRacourciParEmoticon(message, raccourci, emoticon) {
+            return message.replace(raccourci, '<img src="img/' + emoticon + '.png" />');
+        }
+
+        function onClickMe(raccourci) {
+            $("#message").val($("#message").val() + raccourci);
+        }
+        // a tester
+        function str_replace_all(string, str_find, str_replace) {
+            try {
+                return string.replace(new RegExp(str_find, "gi"), str_replace);
+            } catch (ex) { return string; }
+        }
+
+
     </script>
 </body>
 </html>

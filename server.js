@@ -20,10 +20,24 @@ io.sockets.on('connection', function (socket, pseudo) {
     });
     
     socket.on('message', function (message) {
-        message = ent.encode(message);
+        //message = ent.encode(message);
         socket.broadcast.emit('message', { pseudo: socket.pseudo, message: message });
         console.log("Nouveau message de", socket.pseudo);
     });
 });
 var port = process.env.PORT
 server.listen('8080');
+
+function ShowIcon(message) {
+    message = ReplaceRacourciParEmoticon(message, ":))", "s_radieu");
+    message = ReplaceRacourciParEmoticon(message ,":)", "s_joie");
+    message = ReplaceRacourciParEmoticon(message,":|", "s_surprise");
+    message = ReplaceRacourciParEmoticon(message,":(", "s_degout");
+    console.log(message);
+    return message;
+}
+
+function ReplaceRacourciParEmoticon(message, raccourci, emoticon) {
+    return message.replace(raccourci, '<img src="img/' + emoticon + '.png" />');
+}
+
