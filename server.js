@@ -8,6 +8,9 @@ app.get('/', function (req, res) {
     res.sendfile(__dirname + '/index.html');
 });
 
+var express = require('express');
+app.use(express.static("public"));
+
 io.sockets.on('connection', function (socket, pseudo) {
     socket.on('nouveau_client', function (pseudo) {
         pseudo = ent.encode(pseudo);
@@ -23,4 +26,4 @@ io.sockets.on('connection', function (socket, pseudo) {
     });
 });
 var port = process.env.PORT
-server.listen(port);
+server.listen('8080');

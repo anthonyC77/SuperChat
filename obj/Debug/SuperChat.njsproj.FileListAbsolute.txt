@@ -1,0 +1,3 @@
+c:\users\chassier\documents\visual studio 2017\Projects\SuperChat\SuperChat\obj\Debug\SuperChat.njsprojResolveAssemblyReference.cache
+c:\users\chassier\documents\visual studio 2017\Projects\SuperChat\SuperChat\obj\Debug\SuperChat.njsproj.CoreCompileInputs.cache
+c:\users\chassier\documents\visual studio 2017\Projects\SuperChat\SuperChat\bin\Microsoft.NodejsTools.WebRole.dll

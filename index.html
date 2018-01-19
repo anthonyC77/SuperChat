@@ -16,6 +16,10 @@
 <body>
     <h1>Chat</h1>
     <form action="/" method="post" id="formulaire_chat">
+        <img src="img/degout.png" />&nbsp;
+        <img src="img/joie.png" />&nbsp;
+        <img src="img/radieu.png" />&nbsp;
+        <img src="img/surprise.png" /><br />
         <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
         <input type="submit" id="envoi_message" value="Envoyer" />
     </form>
@@ -25,7 +29,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         
-            var socket = io.connect('http://localhost:1337');
+            var socket = io.connect('http://localhost:8080');
             var pseudo = prompt('Quel est votre pseudo ?');
             socket.emit('nouveau_client', pseudo);
             document.title = pseudo + ' - ' + document.title;
