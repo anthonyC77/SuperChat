@@ -42,11 +42,3 @@ function ShowIcon(message) {
 function ReplaceRacourciParEmoticon(message, raccourci, emoticon) {
     return ReplaceAll(message, raccourci, '<img src="img/' + emoticon + '.png" />');
 }
-
-function ReplaceAll(chaine, aTrouve, remplace) {
-    while (chaine.indexOf(aTrouve) != -1) {
-        chaine = chaine.replace(aTrouve, remplace);
-    }
-
-    return chaine;
-}
