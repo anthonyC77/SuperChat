@@ -19,9 +19,9 @@
         <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
         <input type="submit" id="envoi_message" value="Envoyer" /><br /><br />
         <img src="img/s_degout.png" onclick="onClickMe(':(')" />&nbsp;
-        <img src="img/s_joie.png" onclick="insert(this,':)')" />&nbsp;
-        <img src="img/s_radieu.png" onclick="insert(this,':))')" />&nbsp;
-        <img src="img/s_surprise.png" onclick="insert(this,':|')" />
+        <img src="img/s_joie.png" onclick="onClickMe(':)')" />&nbsp;
+        <img src="img/s_radieu.png" onclick="onClickMe(':))')" />&nbsp;
+        <img src="img/s_surprise.png" onclick="onClickMe(':|')" />
     </form>
     
 
@@ -67,7 +67,8 @@
         }
 
         function ReplaceRacourciParEmoticon(message, raccourci, emoticon) {
-            return message.replace(raccourci, '<img src="img/' + emoticon + '.png" />');
+            return ReplaceAll(message, raccourci, '<img src="img/' + emoticon + '.png" />');
+            //return message.replace(raccourci, '<img src="img/' + emoticon + '.png" />');
         }
 
         function onClickMe(raccourci) {
@@ -80,6 +81,13 @@
             } catch (ex) { return string; }
         }
 
+        function ReplaceAll(chaine, aTrouve, remplace) {
+            while (chaine.indexOf(aTrouve) != -1) {
+                chaine = chaine.replace(aTrouve, remplace);
+            }
+
+            return chaine;
+        }
 
     </script>
 </body>

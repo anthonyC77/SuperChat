@@ -21,8 +21,10 @@ io.sockets.on('connection', function (socket, pseudo) {
     
     socket.on('message', function (message) {
         //message = ent.encode(message);
+        //ShowIcon(message);
         socket.broadcast.emit('message', { pseudo: socket.pseudo, message: message });
         console.log("Nouveau message de", socket.pseudo);
+        console.log("Nouveau message de", ShowIcon(message));
     });
 });
 var port = process.env.PORT
@@ -38,6 +40,13 @@ function ShowIcon(message) {
 }
 
 function ReplaceRacourciParEmoticon(message, raccourci, emoticon) {
-    return message.replace(raccourci, '<img src="img/' + emoticon + '.png" />');
+    return ReplaceAll(message, raccourci, '<img src="img/' + emoticon + '.png" />');
 }
 
+function ReplaceAll(chaine, aTrouve, remplace) {
+    while (chaine.indexOf(aTrouve) != -1) {
+        chaine = chaine.replace(aTrouve, remplace);
+    }
+
+    return chaine;
+}
