@@ -14,83 +14,133 @@
         }
     </style>
 </head>
-
+<!--See: <img src="//i.stack.imgur.com/nO2hl.png" /> <img src="//i.stack.imgur.com/iUDpH.png" /> You can even copy/paste these images within this field <img src="//i.stack.imgur.com/QrKSV.png" />-->
 <body>
-        <h1>Chat</h1>
-        <form action="/" method="post" id="formulaire_chat">
-            <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
-            <input type="submit" id="envoi_message" value="Envoyer" /><br /><br />
-            <img src="img/s_degout.png" onclick="onClickMe(':(')" />&nbsp;
-            <img src="img/s_joie.png" onclick="onClickMe(':)')" />&nbsp;
-            <img src="img/s_radieu.png" onclick="onClickMe(':))')" />&nbsp;
-            <img src="img/s_surprise.png" onclick="onClickMe(':|')" />
-        </form>
+    <h1>Chat</h1>
+    <form action="/" method="post" id="formulaire_chat">
+        <input type="image" src="img/s_degout.png" onclick="onClickMe(this,':(')" />&nbsp;
+        <input type="image" src="img/s_joie.png" onclick="onClickMe(this,':)')" />&nbsp;
+        <input type="image" src="img/s_radieu.png" onclick="onClickMe(this,':))')" />&nbsp;
+        <input type="image" src="img/s_surprise.png" onclick="onClickMe(this,':|')" />
+        <br /><br />
+        <div onclick="onFocusMessage(this)" id="messageDiv" name="messageDiv" contenteditable="true" style="float: left;width:400px; height:30px" autofocus>
+            Votre message...
+        </div>
+        <input type="submit" id="envoi_message" value="Envoyer" onclick="clickEnvoi()" style="height:32px" /><br /><br />
+    </form>
+
+   
 
 
-        <section id="zone_chat"></section>
+    <section id="zone_chat"></section>
+    <style>
+        [contenteditable] {
+            border: 1px solid #00F;
+            line-height: 1.4em;
+            -webkit-appearance: textfield;
+            appearance: textfield
+        }
 
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script>
+        img {
+            vertical-align: top;
+            max-height: 1.4em;
+            max-width: 1.4em;
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
 
-            var socket = io.connect();
-            var pseudo = prompt('Quel est votre pseudo ?');
-            socket.emit('nouveau_client', pseudo);
-            document.title = pseudo + ' - ' + document.title;
+        var socket = io.connect();
+        var pseudo = prompt('Quel est votre pseudo ?');
+        socket.emit('nouveau_client', pseudo);
+        document.title = pseudo + ' - ' + document.title;
 
-            socket.on('message', function (data) {
-                insereMessage(data.pseudo, data.message)
-            })
+        socket.on('message', function (data) {
+            insereMessage(data.pseudo, data.message)
+        })
 
-            socket.on('nouveau_client', function (pseudo) {
-                $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
-            })
+        socket.on('nouveau_client', function (pseudo) {
+            $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+        })
 
-            $('#formulaire_chat').submit(function () {
-                var message = $('#message').val();
-                message = ShowIcon(message);
+        $(document).keypress(function (e) {
+            if (e.which == 13) {
+                clickEnvoi();
+                $("#formulaire_chat").submit();
+                return false;
+            }
+        });
+
+
+        $('#formulaire_chat').submit(function () {
+            if (clickedEnvoi) {
+                clickedEnvoi = false;
+                var message = $('#messageDiv').html();
                 socket.emit('message', message);
                 insereMessage(pseudo, message);
-                $('#message').val('').focus();
-                return false;
-            });
+                $('#messageDiv').html('');
+                $('#messageDiv').focus();
+            }
+            return false;
+        });
 
-            function insereMessage(pseudo, message) {
-                $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> ' + message + '</p>');
+        var clickedEnvoi = false;
+
+        function onFocusMessage(that) {
+            if ($('#messageDiv').html().includes('Votre message...')) {
+                $('#messageDiv').html('');
+            }
+        }
+
+        function clickEnvoi() {
+            clickedEnvoi = true;
+        }
+
+        function insereMessage(pseudo, message) {
+            $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> ' + message + '</p>');
+        }
+
+        function ShowIcon(message) {
+            message = ReplaceRacourciParEmoticon(message, ":))", "s_radieu");
+            message = ReplaceRacourciParEmoticon(message, ":)", "s_joie");
+            message = ReplaceRacourciParEmoticon(message, ":|", "s_surprise");
+            message = ReplaceRacourciParEmoticon(message, ":(", "s_degout");
+            console.log(message);
+            return message;
+        }
+
+        function ReplaceRacourciParEmoticon(message, raccourci, emoticon) {
+            return ReplaceAll(message, raccourci, '<img src="img/' + emoticon + '.png" />');
+            //return message.replace(raccourci, '<img src="img/' + emoticon + '.png" />');
+        }
+
+        (function ($) {
+            $.fn.setCursorToTextEnd = function () {
+                var $initialVal = this.val();
+                this.val($initialVal);
+            };
+        })(jQuery);
+
+        function onClickMe(that, raccourci) {
+            onFocusMessage(that);
+            var valText = $('#messageDiv').html();
+            $('#messageDiv').empty();
+            $('#messageDiv').prepend(valText + '<input type="image" src=' + that.src + ' />');
+            event = document.createEvent("HTMLEvents");
+            event.preventDefault();
+            $('#messageDiv').setCursorToTextEnd();
+            return false;
+        }
+
+        function ReplaceAll(chaine, aTrouve, remplace) {
+            while (chaine.indexOf(aTrouve) != -1) {
+                chaine = chaine.replace(aTrouve, remplace);
             }
 
-            function ShowIcon(message) {
-                message = ReplaceRacourciParEmoticon(message, ":))", "s_radieu");
-                message = ReplaceRacourciParEmoticon(message, ":)", "s_joie");
-                message = ReplaceRacourciParEmoticon(message, ":|", "s_surprise");
-                message = ReplaceRacourciParEmoticon(message, ":(", "s_degout");
-                console.log(message);
-                return message;
-            }
+            return chaine;
+        }
 
-            function ReplaceRacourciParEmoticon(message, raccourci, emoticon) {
-                return ReplaceAll(message, raccourci, '<img src="img/' + emoticon + '.png" />');
-                //return message.replace(raccourci, '<img src="img/' + emoticon + '.png" />');
-            }
-
-            function onClickMe(raccourci) {
-                $("#message").val($("#message").val() + raccourci);
-            }
-            // a tester
-            function str_replace_all(string, str_find, str_replace) {
-                try {
-                    return string.replace(new RegExp(str_find, "gi"), str_replace);
-                } catch (ex) { return string; }
-            }
-
-            function ReplaceAll(chaine, aTrouve, remplace) {
-                while (chaine.indexOf(aTrouve) != -1) {
-                    chaine = chaine.replace(aTrouve, remplace);
-                }
-
-                return chaine;
-            }
-
-</script>
+    </script>
 </body>
 </html>
