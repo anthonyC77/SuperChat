@@ -45,6 +45,10 @@
     <Content Include="public\img\joie.png" />
     <Content Include="public\img\radieu.png" />
     <Content Include="public\img\surprise.png" />
+    <Content Include="public\img\s_degout.png" />
+    <Content Include="public\img\s_joie.png" />
+    <Content Include="public\img\s_radieu.png" />
+    <Content Include="public\img\s_surprise.png" />
     <Content Include="README.md" />
     <Content Include="Remerciements.txt">
       <SubType>Code</SubType>

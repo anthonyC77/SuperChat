@@ -1,15 +1,15 @@
 {
-    "name": "super-chat",
-    "version": "0.1.0",
+  "name": "super-chat",
+  "version": "0.1.0",
   "dependencies": {
+    "ent": "~0.1.0",
     "express": "~3.3.4",
+    "jquery": "~3.2.1",
     "serve-static": "1.13.1",
     "socket.io": "~1.2.1",
-    "ent": "~0.1.0",
     "static": "~2.0.0",
-    "typescript": "~2.6.2",
-    "jquery": "~3.2.1"
+    "typescript": "~2.6.2"
   },
-    "author": "Mateo21 <mateo21@email.com>",
-    "description": "Un super Chat temps réel avec socket.io"
+  "author": "ant",
+  "description": "Chat en socket.io"
 }

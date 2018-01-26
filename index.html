@@ -29,9 +29,6 @@
         <input type="submit" id="envoi_message" value="Envoyer" onclick="clickEnvoi()" style="height:32px" /><br /><br />
     </form>
 
-   
-
-
     <section id="zone_chat"></section>
     <style>
         [contenteditable] {
@@ -50,11 +47,28 @@
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        
+        navigator.serviceWorker.register('sw.js', {
+            // The scope cannot be parent to the script url
+            scope: './'
+        });
 
         var socket = io.connect();
         var pseudo = prompt('Quel est votre pseudo ?');
         socket.emit('nouveau_client', pseudo);
         document.title = pseudo + ' - ' + document.title;
+
+        $('img').bind('click', function () {
+            debugger;
+            onFocusMessage(that);
+            var valText = $('#messageDiv').html();
+            $('#messageDiv').empty();
+            $('#messageDiv').prepend(valText + '<input type="image" src=' + this.src + ' />');
+            event = document.createEvent("HTMLEvents");
+            event.preventDefault();
+            $('#messageDiv').setCursorToTextEnd();
+            return false;
+        });
 
         socket.on('message', function (data) {
             insereMessage(data.pseudo, data.message)
