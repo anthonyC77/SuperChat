@@ -48,11 +48,6 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         
-        navigator.serviceWorker.register('sw.js', {
-            // The scope cannot be parent to the script url
-            scope: './'
-        });
-
         var socket = io.connect();
         var pseudo = prompt('Quel est votre pseudo ?');
         socket.emit('nouveau_client', pseudo);
@@ -85,7 +80,6 @@
                 return false;
             }
         });
-
 
         $('#formulaire_chat').submit(function () {
             if (clickedEnvoi) {

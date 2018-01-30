@@ -1,12 +1,28 @@
-var app = require('express')(),
-    server = require('http').createServer(app),
-    io = require('socket.io').listen(server),
-    ent = require('ent'), 
-    fs = require('fs');
+// curl -k https://localhost:8000/
+const https = require('https');
+const fs = require('fs');
 
-app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/index.html');
-});
+const options = {
+    key: fs.readFileSync('private.key'),
+    cert: fs.readFileSync('primary.cert')
+};
+
+var app = require('express')(),
+    server = https.createServer(options, (req, res) => {
+        try {
+            fs.readFile('./index.html', 'utf-8', function (error, content) {
+                res.writeHead(200, { "Content-Type": "text/html" });
+                res.end(content);
+            });
+
+        } catch (e)
+        {
+            var error = e;
+        }
+
+    }),
+    io = require('socket.io').listen(server),
+    ent = require('ent');
 
 var express = require('express');
 app.use(express.static("public"));
@@ -25,6 +41,6 @@ io.sockets.on('connection', function (socket, pseudo) {
         console.log("Nouveau message de", socket.pseudo);
     });
 });
-var port = process.env.PORT || 3000;
-server.listen(port);
+//var port = process.env.PORT || 3000;
+server.listen(8000);
 
