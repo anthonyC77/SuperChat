@@ -41,6 +41,6 @@ io.sockets.on('connection', function (socket, pseudo) {
         console.log("Nouveau message de", socket.pseudo);
     });
 });
-//var port = process.env.PORT || 3000;
-server.listen(8000);
+var port = process.env.PORT || 8000;
+server.listen(port);
 
